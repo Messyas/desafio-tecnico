@@ -1,0 +1,7 @@
+.products-page {
+  padding: 1.5rem;
+}
+
+.products-card {
+  width: min(100%, 640px);
+}

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from flask import current_app, jsonify, request
 from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
 
 from . import api_bp
 from ..auth.decorators import require_auth
@@ -67,7 +68,24 @@ def register():
         password_hash=hash_password(password),
     )
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        conflicting_email = User.query.filter(
+            func.lower(User.email) == normalized_email
+        ).one_or_none()
+        if conflicting_email is not None:
+            return jsonify({"error": "email_already_exists"}), 409
+
+        conflicting_name = User.query.filter(
+            func.lower(User.name) == normalized_name.lower()
+        ).one_or_none()
+        if conflicting_name is not None:
+            return jsonify({"error": "name_already_exists"}), 409
+
+        return jsonify({"error": "conflict"}), 409
+
     db.session.refresh(user)
 
     return _build_auth_response(user, 201)

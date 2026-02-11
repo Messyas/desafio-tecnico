@@ -1,0 +1,42 @@
+.login-page {
+  min-height: calc(100dvh - 64px);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(160deg, #f6f8fb 0%, #eaf3ff 100%);
+}
+
+.login-card {
+  width: min(100%, 420px);
+}
+
+.login-form {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.login-error {
+  margin: 0;
+  color: #ba1a1a;
+  font-size: 0.875rem;
+}
+
+.login-feedback {
+  margin: 0;
+  color: #0d47a1;
+  font-size: 0.875rem;
+}
+
+.login-submit {
+  min-height: 48px;
+}
+
+.login-submit :is(span, mat-spinner) {
+  margin-inline: auto;
+}
+
+.login-secondary {
+  align-self: center;
+}

@@ -1,6 +1,8 @@
 import logging
 import time
 
+from redis.exceptions import TimeoutError as RedisTimeoutError
+
 from app import create_app
 from app.models import Product
 from app.services.database import check_database
@@ -103,6 +105,9 @@ def process_next_message(
     active_logger = logger or LOGGER
     try:
         message = pop_product_operation(timeout=timeout)
+    except RedisTimeoutError:
+        active_logger.debug("Worker queue poll timed out timeout=%s", timeout)
+        return False
     except Exception as exc:
         active_logger.exception("Worker could not read from queue error=%s", exc)
         return False

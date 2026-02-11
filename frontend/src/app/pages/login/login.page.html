@@ -1,0 +1,68 @@
+<section class="login-page">
+  <mat-card class="login-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Entrar</mat-card-title>
+      <mat-card-subtitle>Acesse sua conta para continuar.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form class="login-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Usuario ou e-mail</mat-label>
+          <input matInput type="text" autocomplete="username" formControlName="identifier" />
+          @if (controls.identifier.touched && controls.identifier.invalid) {
+            <mat-error>Campo obrigatorio.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Senha</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            autocomplete="current-password"
+            formControlName="password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            [attr.aria-label]="hidePassword() ? 'Mostrar senha' : 'Ocultar senha'"
+            (click)="togglePasswordVisibility()"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          @if (controls.password.touched && controls.password.invalid) {
+            <mat-error>Campo obrigatorio.</mat-error>
+          }
+        </mat-form-field>
+
+        @if (errorMessage(); as errorText) {
+          <p class="login-error" aria-live="polite">{{ errorText }}</p>
+        }
+
+        @if (feedbackMessage(); as feedback) {
+          <p class="login-feedback">{{ feedback }}</p>
+        }
+
+        <button
+          mat-flat-button
+          type="submit"
+          color="primary"
+          class="login-submit"
+          [disabled]="isSubmitting()"
+        >
+          @if (isSubmitting()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <span>Entrar</span>
+          }
+        </button>
+
+        <button mat-button type="button" class="login-secondary" routerLink="/register">
+          Criar conta
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</section>

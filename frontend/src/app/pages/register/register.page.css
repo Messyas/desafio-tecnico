@@ -1,0 +1,40 @@
+.register-page {
+  min-height: calc(100dvh - 64px);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(160deg, #f6f8fb 0%, #eaf3ff 100%);
+}
+
+.register-card {
+  width: min(100%, 440px);
+}
+
+.register-form {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.register-feedback {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #0d47a1;
+}
+
+.register-feedback.is-error {
+  color: #b71c1c;
+}
+
+.register-submit {
+  min-height: 48px;
+}
+
+.register-submit :is(span, mat-spinner) {
+  margin-inline: auto;
+}
+
+.register-secondary {
+  align-self: center;
+}

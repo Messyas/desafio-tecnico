@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from types import SimpleNamespace
+from unittest.mock import Mock
 
+from redis.exceptions import TimeoutError as RedisTimeoutError
 import worker
 
 
@@ -112,3 +114,33 @@ def test_process_message_invalid_message_rolls_back(monkeypatch):
     assert processed is False
     assert fake_session.commits == 0
     assert fake_session.rollbacks == 1
+
+
+def test_process_next_message_handles_redis_timeout_without_exception_log(monkeypatch):
+    logger = Mock()
+
+    def raise_timeout(timeout):
+        raise RedisTimeoutError("Timeout reading from socket")
+
+    monkeypatch.setattr(worker, "pop_product_operation", raise_timeout)
+
+    processed = worker.process_next_message(timeout=2, logger=logger)
+
+    assert processed is False
+    logger.exception.assert_not_called()
+    logger.debug.assert_called_once_with("Worker queue poll timed out timeout=%s", 2)
+
+
+def test_process_next_message_logs_unexpected_queue_errors(monkeypatch):
+    logger = Mock()
+
+    def raise_error(timeout):
+        raise RuntimeError("redis_unavailable")
+
+    monkeypatch.setattr(worker, "pop_product_operation", raise_error)
+
+    processed = worker.process_next_message(timeout=2, logger=logger)
+
+    assert processed is False
+    logger.debug.assert_not_called()
+    logger.exception.assert_called_once()

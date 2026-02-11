@@ -1,0 +1,96 @@
+<section class="register-page">
+  <mat-card class="register-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Criar conta</mat-card-title>
+      <mat-card-subtitle>Cadastre-se para acessar os produtos.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form class="register-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Nome de usuario</mat-label>
+          <input matInput type="text" autocomplete="username" formControlName="name" />
+          @if (controls.name.touched && controls.name.invalid) {
+            <mat-error>Campo obrigatorio.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>E-mail</mat-label>
+          <input matInput type="email" autocomplete="email" formControlName="email" />
+          @if (controls.email.touched && controls.email.hasError('required')) {
+            <mat-error>Campo obrigatorio.</mat-error>
+          }
+          @if (controls.email.touched && !controls.email.hasError('required') && controls.email.hasError('email')) {
+            <mat-error>E-mail invalido.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Senha</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            autocomplete="new-password"
+            formControlName="password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            [attr.aria-label]="hidePassword() ? 'Mostrar senha' : 'Ocultar senha'"
+            (click)="togglePasswordVisibility()"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          @if (controls.password.touched && controls.password.hasError('required')) {
+            <mat-error>Campo obrigatorio.</mat-error>
+          }
+          @if (controls.password.touched && !controls.password.hasError('required') && controls.password.hasError('minlength')) {
+            <mat-error>Minimo de 8 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Confirmar senha</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            autocomplete="new-password"
+            formControlName="confirmPassword"
+          />
+          @if (controls.confirmPassword.touched && controls.confirmPassword.hasError('required')) {
+            <mat-error>Campo obrigatorio.</mat-error>
+          }
+          @if (controls.confirmPassword.touched && controls.confirmPassword.hasError('passwordMismatch')) {
+            <mat-error>As senhas nao conferem.</mat-error>
+          }
+        </mat-form-field>
+
+        @if (feedbackMessage(); as feedback) {
+          <p class="register-feedback" [class.is-error]="feedbackVariant() === 'error'">
+            {{ feedback }}
+          </p>
+        }
+
+        <button
+          mat-flat-button
+          type="submit"
+          color="primary"
+          class="register-submit"
+          [disabled]="isSubmitting()"
+        >
+          @if (isSubmitting()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <span>Cadastrar</span>
+          }
+        </button>
+
+        <button mat-button type="button" class="register-secondary" routerLink="/login">
+          Ja tenho conta
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</section>
