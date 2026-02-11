@@ -70,9 +70,14 @@ def _build_engine_options(database_url: str, readiness_db_timeout_ms: int):
 
 
 def configure_database(app: Flask) -> None:
-    database_url = os.getenv("DATABASE_URL", DEFAULT_DATABASE_URL)
+    database_url = app.config.get("SQLALCHEMY_DATABASE_URI") or os.getenv(
+        "DATABASE_URL",
+        DEFAULT_DATABASE_URL,
+    )
     readiness_db_timeout_ms = _read_positive_int(
-        os.getenv("READINESS_DB_TIMEOUT_MS"),
+        str(app.config.get("READINESS_DB_TIMEOUT_MS"))
+        if app.config.get("READINESS_DB_TIMEOUT_MS") is not None
+        else os.getenv("READINESS_DB_TIMEOUT_MS"),
         DEFAULT_READINESS_DB_TIMEOUT_MS,
     )
 

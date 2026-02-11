@@ -9,6 +9,7 @@ from redis.exceptions import TimeoutError as RedisTimeoutError
 
 DEFAULT_REDIS_URL = "redis://redis:6379/0"
 DEFAULT_READINESS_REDIS_TIMEOUT_MS = 250
+DEFAULT_PRODUCTS_QUEUE_NAME = "queue:products"
 
 
 def _parse_bool(value: str | None, default: bool = False) -> bool:
@@ -71,16 +72,28 @@ def _ping_redis(client: Redis) -> dict[str, object]:
 
 
 def configure_redis(app: Flask) -> None:
-    redis_url = os.getenv("REDIS_URL", DEFAULT_REDIS_URL)
-    redis_required = _parse_bool(os.getenv("REDIS_REQUIRED"), default=False)
+    redis_url = app.config.get("REDIS_URL") or os.getenv("REDIS_URL", DEFAULT_REDIS_URL)
+    redis_required = _parse_bool(
+        str(app.config.get("REDIS_REQUIRED"))
+        if app.config.get("REDIS_REQUIRED") is not None
+        else os.getenv("REDIS_REQUIRED"),
+        default=False,
+    )
     readiness_redis_timeout_ms = _read_positive_int(
-        os.getenv("READINESS_REDIS_TIMEOUT_MS"),
+        str(app.config.get("READINESS_REDIS_TIMEOUT_MS"))
+        if app.config.get("READINESS_REDIS_TIMEOUT_MS") is not None
+        else os.getenv("READINESS_REDIS_TIMEOUT_MS"),
         DEFAULT_READINESS_REDIS_TIMEOUT_MS,
+    )
+    products_queue_name = app.config.get("PRODUCTS_QUEUE_NAME") or os.getenv(
+        "PRODUCTS_QUEUE_NAME",
+        DEFAULT_PRODUCTS_QUEUE_NAME,
     )
 
     app.config["REDIS_URL"] = redis_url
     app.config["REDIS_REQUIRED"] = redis_required
     app.config["READINESS_REDIS_TIMEOUT_MS"] = readiness_redis_timeout_ms
+    app.config["PRODUCTS_QUEUE_NAME"] = products_queue_name
 
     client = _build_redis_client(redis_url, readiness_redis_timeout_ms)
     app.extensions["redis_client"] = client
