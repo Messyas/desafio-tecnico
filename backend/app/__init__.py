@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from dotenv import load_dotenv
 from flask import Flask
 
@@ -9,8 +10,11 @@ from .services.redis import configure_redis
 load_dotenv()
 
 
-def create_app() -> Flask:
+def create_app(test_config: Mapping[str, object] | None = None) -> Flask:
     app = Flask(__name__)
+    if test_config:
+        app.config.update(test_config)
+
     configure_database(app)
     configure_redis(app)
 
