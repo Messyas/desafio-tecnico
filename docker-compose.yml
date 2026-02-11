@@ -3,14 +3,77 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: desafio-api
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://postgres:postgres@db:5432/desafio}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      REDIS_REQUIRED: ${REDIS_REQUIRED:-false}
+      READINESS_REDIS_TIMEOUT_MS: ${READINESS_REDIS_TIMEOUT_MS:-250}
+      READINESS_DB_TIMEOUT_MS: ${READINESS_DB_TIMEOUT_MS:-1000}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "5000:5000"
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: python worker.py
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://postgres:postgres@db:5432/desafio}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      REDIS_REQUIRED: ${REDIS_REQUIRED:-false}
+      READINESS_REDIS_TIMEOUT_MS: ${READINESS_REDIS_TIMEOUT_MS:-250}
+      READINESS_DB_TIMEOUT_MS: ${READINESS_DB_TIMEOUT_MS:-1000}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: desafio
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d desafio"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: desafio-frontend
     ports:
       - "4200:4200"
+
+volumes:
+  postgres_data:
+  redis_data:
