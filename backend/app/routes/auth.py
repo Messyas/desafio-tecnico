@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from flask import current_app, jsonify, request
-from sqlalchemy import or_
+from sqlalchemy import func
 
 from . import api_bp
 from ..auth.service import create_access_token, verify_password
@@ -19,13 +19,19 @@ def login():
     if not isinstance(identifier, str) or not isinstance(password, str):
         return jsonify({"error": "invalid_payload"}), 400
 
-    identifier = identifier.strip()
-    if not identifier or not password:
+    normalized_identifier = identifier.strip()
+    if not normalized_identifier or not password:
         return jsonify({"error": "invalid_payload"}), 400
 
+    identifier_lower = normalized_identifier.lower()
     user = User.query.filter(
-        or_(User.name == identifier, User.email == identifier)
-    ).first()
+        func.lower(User.email) == identifier_lower
+    ).one_or_none()
+    if user is None:
+        user = User.query.filter(
+            func.lower(User.name) == identifier_lower
+        ).one_or_none()
+
     if user is None or not verify_password(password, user.password_hash):
         return jsonify({"error": "invalid_credentials"}), 401
 
