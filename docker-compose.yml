@@ -1,4 +1,27 @@
 services:
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: flask --app app db upgrade
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://postgres:postgres@db:5432/desafio}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      REDIS_REQUIRED: ${REDIS_REQUIRED:-false}
+      REDIS_SOCKET_CONNECT_TIMEOUT_MS: ${REDIS_SOCKET_CONNECT_TIMEOUT_MS:-1000}
+      REDIS_SOCKET_TIMEOUT_MS: ${REDIS_SOCKET_TIMEOUT_MS:-5000}
+      READINESS_REDIS_TIMEOUT_MS: ${READINESS_REDIS_TIMEOUT_MS:-250}
+      READINESS_DB_TIMEOUT_MS: ${READINESS_DB_TIMEOUT_MS:-1000}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-me-in-production}
+      JWT_EXPIRES_SECONDS: ${JWT_EXPIRES_SECONDS:-3600}
+      PRODUCTS_QUEUE_NAME: ${PRODUCTS_QUEUE_NAME:-queue:products}
+    depends_on:
+      db:
+        condition: service_healthy
+
   api:
     build:
       context: ./backend
@@ -22,6 +45,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     ports:
       - "5000:5000"
 
@@ -49,6 +74,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   db:
     image: postgres:16-alpine

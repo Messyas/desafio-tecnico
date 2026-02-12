@@ -39,6 +39,9 @@ class FakeSession:
     def commit(self):
         self.commits += 1
 
+    def flush(self):
+        return None
+
     def rollback(self):
         self.rollbacks += 1
 
@@ -52,13 +55,15 @@ def _install_fakes(monkeypatch):
 
 def test_process_message_create(monkeypatch):
     fake_session = _install_fakes(monkeypatch)
+    logger = Mock()
 
     processed = worker.process_message(
         {
             "operation_id": "op-1",
             "operation": "create",
             "payload": {"nome": "Mouse", "marca": "ACME", "valor": 10},
-        }
+        },
+        logger=logger,
     )
 
     assert processed is True
@@ -66,6 +71,12 @@ def test_process_message_create(monkeypatch):
     assert len(fake_session.storage) == 1
     created = next(iter(fake_session.storage.values()))
     assert created.nome == "Mouse"
+    logger.info.assert_called_once_with(
+        "Worker processed operation=%s operation_id=%s product_id=%s status=success",
+        "create",
+        "op-1",
+        created.id,
+    )
 
 
 def test_process_message_update(monkeypatch):

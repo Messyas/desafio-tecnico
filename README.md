@@ -1,34 +1,39 @@
-# Desafio Tecnico
+# Desafio Tecnico - Flask + Redis + Angular
 
-## 1) Subir tudo com Docker Compose
+Aplicacao fullstack feita em:
+
+- Backend em Flask
+- Banco PostgreSQL
+- Fila Redis e um Worker separado para processar as mensagens
+- Frontend Angular
+
+## Executar com Docker Compose 
+
+1. Subir sistema completo:
 
 ```terminal
-Copy-Item backend/.env.example backend/.env
 docker compose up --build
 ```
 
-URLs:
+2. URLs:
 
 - Frontend: `http://localhost:4200`
 - API: `http://localhost:5000`
-- Swagger: `http://localhost:5000/docs`
+- DOCS: `http://localhost:5000/docs`
 
-## 2) Rodar testes via Docker
+Migracoes:
 
-Sobe apenas banco e redis para os testes:
+- O servico `migrate` roda `flask --app app db upgrade` antes de `api` e `worker`.
+- Para rodar migracao manualmente: `docker compose run --rm migrate`.
+
+## Testes
+
+### Backend
+
+Com o Docker:
 
 ```terminal
 docker compose up -d db redis
-```
-
-Executa testes unitarios do backend:
-
-```terminal
 docker compose run --rm api pytest -q tests/unit
-```
-
-Executa testes de integracao do backend:
-
-```terminal
 docker compose run --rm api pytest -q tests/integration
 ```

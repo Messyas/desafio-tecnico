@@ -25,7 +25,7 @@ def _to_int(value: object, field_name: str) -> int:
     return parsed
 
 
-def _handle_create(message: dict[str, object]) -> None:
+def _handle_create(message: dict[str, object]) -> int:
     payload = validate_product_payload(message.get("payload"))
     product = Product(
         nome=str(payload["nome"]),
@@ -33,9 +33,13 @@ def _handle_create(message: dict[str, object]) -> None:
         valor=payload["valor"],
     )
     db.session.add(product)
+    db.session.flush()
+    if product.id is None:
+        raise ValueError("product_id_not_generated")
+    return int(product.id)
 
 
-def _handle_update(message: dict[str, object]) -> None:
+def _handle_update(message: dict[str, object]) -> int:
     product_id = _to_int(message.get("product_id"), "product_id")
     payload = validate_product_payload(message.get("payload"))
 
@@ -47,22 +51,29 @@ def _handle_update(message: dict[str, object]) -> None:
     product.marca = str(payload["marca"])
     product.valor = payload["valor"]
     db.session.add(product)
+    return int(product.id)
 
 
-def _handle_delete(message: dict[str, object]) -> None:
+def _handle_delete(message: dict[str, object]) -> int:
     product_id = _to_int(message.get("product_id"), "product_id")
     product = db.session.get(Product, product_id)
     if product is None:
         raise ValueError("product_not_found")
 
     db.session.delete(product)
+    return product_id
 
 
 def process_message(message: dict[str, object], logger: logging.Logger | None = None) -> bool:
     active_logger = logger or LOGGER
     operation = str(message.get("operation") or "")
     operation_id = str(message.get("operation_id") or "")
-    product_id = message.get("product_id")
+    product_id: int | None
+    raw_product_id = message.get("product_id")
+    try:
+        product_id = int(raw_product_id) if raw_product_id is not None else None
+    except (TypeError, ValueError):
+        product_id = None
 
     if not operation_id:
         active_logger.error("Worker skipped message missing operation_id")
@@ -70,11 +81,11 @@ def process_message(message: dict[str, object], logger: logging.Logger | None = 
 
     try:
         if operation == "create":
-            _handle_create(message)
+            product_id = _handle_create(message)
         elif operation == "update":
-            _handle_update(message)
+            product_id = _handle_update(message)
         elif operation == "delete":
-            _handle_delete(message)
+            product_id = _handle_delete(message)
         else:
             raise ValueError("unsupported_operation")
 
