@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.mat-mdc-dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+app-product-form {
+  display: block;
+  width: min(100%, 420px);
+  margin-inline: auto;
+}
+
+.product-upsert-dialog__subtitle {
+  width: min(100%, 420px);
+  margin: 0 0 1rem;
+  color: var(--mat-sys-on-surface-variant);
+}

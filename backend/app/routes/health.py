@@ -5,11 +5,6 @@ from ..services.database import check_database
 from ..services.redis import check_redis
 
 
-@api_bp.route("/")
-def hello():
-    return "Oi :)"
-
-
 def _utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace(
         "+00:00",
@@ -36,16 +31,6 @@ def _sanitize_check_result(result: dict[str, object]) -> dict[str, object]:
     if not check["ok"]:
         check["error"] = _sanitize_error(result.get("error"))
     return check
-
-
-@api_bp.route("/health")
-def health():
-    return {"status": "alive", "service": "api", "time": _utc_now()}, 200
-
-
-@api_bp.route("/healthz")
-def healthz():
-    return health()
 
 
 @api_bp.route("/ready")

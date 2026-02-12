@@ -1,0 +1,15 @@
+<mat-toolbar class="app-navbar" role="navigation" aria-label="Main navigation">
+  <span class="app-navbar__brand">{{ title }}</span>
+  <span class="app-navbar__spacer"></span>
+  @if (showLogoutButton) {
+    <button
+      mat-stroked-button
+      type="button"
+      class="app-navbar__logout"
+      [disabled]="isLoggingOut"
+      (click)="onLogout()"
+    >
+      Sair
+    </button>
+  }
+</mat-toolbar>

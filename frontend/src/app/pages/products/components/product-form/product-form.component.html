@@ -1,0 +1,56 @@
+<form class="product-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="product-form__fields">
+    <div class="product-form__field">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+        <mat-label>Nome do produto</mat-label>
+        <input matInput formControlName="nome" autocomplete="off" />
+        @if (controls.nome.touched && controls.nome.invalid) {
+          <mat-error>Campo obrigatorio.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="product-form__field">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+        <mat-label>Marca</mat-label>
+        <input matInput formControlName="marca" autocomplete="off" />
+        @if (controls.marca.touched && controls.marca.invalid) {
+          <mat-error>Campo obrigatorio.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="product-form__field">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" floatLabel="always">
+        <mat-label>Valor</mat-label>
+        <input matInput type="number" min="0.01" step="0.01" formControlName="valor" />
+        @if (controls.valor.touched && controls.valor.hasError('required')) {
+          <mat-error>Campo obrigatorio.</mat-error>
+        }
+        @if (controls.valor.touched && !controls.valor.hasError('required') && controls.valor.hasError('min')) {
+          <mat-error>Informe um valor maior que zero.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="product-form__actions">
+    <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
+      @if (isSubmitting) {
+        <mat-spinner diameter="20"></mat-spinner>
+      } @else {
+        <span>Salvar</span>
+      }
+    </button>
+
+    @if (showCancelButton) {
+      <button mat-button type="button" (click)="onCancelEdit()" [disabled]="isSubmitting">
+        {{ cancelLabel }}
+      </button>
+    } @else if (mode === 'edit') {
+      <button mat-button type="button" (click)="onCancelEdit()" [disabled]="isSubmitting">
+        Cancelar edicao
+      </button>
+    }
+  </div>
+</form>

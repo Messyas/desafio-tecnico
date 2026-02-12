@@ -2,7 +2,6 @@
   <mat-card class="login-card" appearance="outlined">
     <mat-card-header>
       <mat-card-title>Entrar</mat-card-title>
-      <mat-card-subtitle>Acesse sua conta para continuar.</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -11,7 +10,7 @@
           <mat-label>Usuario ou e-mail</mat-label>
           <input matInput type="text" autocomplete="username" formControlName="identifier" />
           @if (controls.identifier.touched && controls.identifier.invalid) {
-            <mat-error>Campo obrigatorio.</mat-error>
+            <mat-error>Campo obrigatório.</mat-error>
           }
         </mat-form-field>
 
@@ -33,7 +32,7 @@
             <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
           </button>
           @if (controls.password.touched && controls.password.invalid) {
-            <mat-error>Campo obrigatorio.</mat-error>
+            <mat-error>Campo obrigatóio.</mat-error>
           }
         </mat-form-field>
 

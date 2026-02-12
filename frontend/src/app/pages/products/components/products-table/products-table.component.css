@@ -1,0 +1,103 @@
+:host {
+  display: block;
+  min-height: 0;
+}
+
+.products-table {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 86%, transparent);
+  background: var(--mat-sys-surface);
+  overflow: hidden;
+}
+
+.products-table mat-progress-bar {
+  flex-shrink: 0;
+}
+
+.products-table__content {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.products-table__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+}
+
+.products-table__table {
+  width: 100%;
+  min-width: 600px;
+}
+
+.products-table__table .mat-mdc-header-cell,
+.products-table__table .mat-mdc-cell {
+  padding-block: 0.8rem;
+}
+
+.products-table__table .mat-mdc-header-cell {
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--mat-sys-surface-container-low) 68%, var(--mat-sys-surface));
+}
+
+.products-table__table .mat-column-actions {
+  width: 220px;
+}
+
+.products-table__table .mat-mdc-cell {
+  color: var(--mat-sys-on-surface);
+}
+
+.products-table__table .mat-mdc-row:nth-child(even) .mat-mdc-cell {
+  background: color-mix(in srgb, var(--mat-sys-surface-container-low) 42%, transparent);
+}
+
+.products-table__actions-cell {
+  white-space: nowrap;
+}
+
+.products-table__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-block: 0.1rem;
+}
+
+.products-table__actions button {
+  min-height: 38px;
+}
+
+.products-table__empty {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1rem;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.products-table__paginator {
+  margin-top: auto;
+  flex-shrink: 0;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  background: var(--mat-sys-surface-container-low);
+}
+
+@media (max-width: 768px) {
+  .products-table__table {
+    min-width: 520px;
+  }
+
+  .products-table__actions button {
+    flex: 1 1 112px;
+  }
+}

@@ -1,7 +1,93 @@
 .products-page {
-  padding: 1.5rem;
+  min-height: calc(100dvh - 64px);
+  width: min(100%, 1120px);
+  margin-inline: auto;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.2vw, 1rem);
+  background: transparent;
 }
 
-.products-card {
-  width: min(100%, 640px);
+.products-page__create-button {
+  min-height: 44px;
+  border-radius: 999px;
+  padding-inline: 1rem;
+  white-space: nowrap;
+}
+
+.products-page__table-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--mat-sys-surface-container-low);
+  border-color: var(--mat-sys-outline-variant);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.products-page__table-header {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.products-page__table-headline {
+  min-width: 0;
+}
+
+.products-page__table-headline mat-card-subtitle {
+  margin-bottom: 8px;
+}
+
+.products-page__table-card mat-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: clamp(360px, 56vh, 620px);
+}
+
+.products-page__table-card app-products-table {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.products-page__load-error {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--mat-sys-error) 24%, transparent);
+  background: color-mix(in srgb, var(--mat-sys-error-container) 46%, transparent);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.products-page__load-error p {
+  margin: 0;
+  color: color-mix(in srgb, var(--mat-sys-on-error-container) 72%, var(--mat-sys-on-surface));
+}
+
+@media (max-width: 768px) {
+  .products-page {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .products-page__table-header {
+    align-items: stretch;
+  }
+
+  .products-page__create-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .products-page__table-card mat-card-content {
+    min-height: 320px;
+  }
 }

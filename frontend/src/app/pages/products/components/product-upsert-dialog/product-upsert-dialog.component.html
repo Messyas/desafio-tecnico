@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+
+<mat-dialog-content>
+  <p class="product-upsert-dialog__subtitle">{{ data.subtitle }}</p>
+
+  <app-product-form
+    [mode]="data.mode"
+    [initialValue]="data.initialValue"
+    [showCancelButton]="true"
+    cancelLabel="Cancelar"
+    (save)="onSave($event)"
+    (cancelEdit)="onCancel()"
+  />
+</mat-dialog-content>

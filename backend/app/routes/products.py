@@ -29,11 +29,57 @@ def _queued_response(operation: str, operation_id: str, product_id: int | None =
     return jsonify(response), 202
 
 
+def _parse_offset(raw_value: str | None) -> int:
+    if raw_value is None:
+        return 0
+
+    try:
+        parsed = int(raw_value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("offset_must_be_non_negative_integer") from exc
+
+    if parsed < 0:
+        raise ValueError("offset_must_be_non_negative_integer")
+    return parsed
+
+
+def _parse_limit(raw_value: str | None) -> int | None:
+    if raw_value is None:
+        return None
+
+    try:
+        parsed = int(raw_value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("limit_must_be_positive_integer") from exc
+
+    if parsed <= 0:
+        raise ValueError("limit_must_be_positive_integer")
+    return parsed
+
+
 @api_bp.route("/products", methods=["GET"])
 @require_auth
 def list_products():
-    products = Product.query.order_by(Product.id.asc()).all()
-    return jsonify([serialize_product(product) for product in products]), 200
+    try:
+        offset = _parse_offset(request.args.get("offset"))
+        limit = _parse_limit(request.args.get("limit"))
+    except ValueError as exc:
+        return _bad_request(str(exc))
+
+    base_query = Product.query.order_by(Product.id.asc())
+    total_count = int(base_query.count())
+
+    paginated_query = base_query.offset(offset)
+    if limit is not None:
+        paginated_query = paginated_query.limit(limit)
+
+    products = paginated_query.all()
+    response = jsonify([serialize_product(product) for product in products])
+    response.headers["X-Total-Count"] = str(total_count)
+    response.headers["X-Offset"] = str(offset)
+    if limit is not None:
+        response.headers["X-Limit"] = str(limit)
+    return response, 200
 
 
 @api_bp.route("/products", methods=["POST"])

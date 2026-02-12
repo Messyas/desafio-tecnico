@@ -1,5 +1,53 @@
 <section class="products-page">
-  <mat-card class="products-card" appearance="outlined">
-    <p>OI</p>
+  <mat-card class="products-page__table-card" appearance="outlined">
+    <mat-card-header>
+      <div class="products-page__table-header">
+        <div class="products-page__table-headline">
+          <mat-card-title>Lista de produtos</mat-card-title>
+          <mat-card-subtitle>
+            @if (queryState().isPolling) {
+              Atualizando lista...
+            } @else {
+              {{ totalProducts() }} produto(s) cadastrados.
+            }
+          </mat-card-subtitle>
+        </div>
+
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          class="products-page__create-button"
+          [disabled]="isBusy()"
+          (click)="onOpenCreateDialog()"
+        >
+          <mat-icon>add</mat-icon>
+          <span>Criar produto</span>
+        </button>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (queryState().errorMessage; as errorMessage) {
+        <div class="products-page__load-error" role="alert">
+          <p>{{ errorMessage }}</p>
+          <button mat-stroked-button type="button" (click)="onRetryLoad()">Tentar novamente</button>
+        </div>
+      }
+
+      <app-products-table
+        [products]="products()"
+        [isLoading]="isTableLoading()"
+        [deletingProductId]="deletingProductId()"
+        [totalCount]="pagination().total"
+        [offset]="pagination().offset"
+        [limit]="pagination().limit"
+        [pageSizeOptions]="pageSizeOptions"
+        [disablePagination]="isBusy() || isTableLoading()"
+        (editProduct)="onEditProduct($event)"
+        (deleteProduct)="onRequestDelete($event)"
+        (pageChange)="onPageChange($event)"
+      />
+    </mat-card-content>
   </mat-card>
 </section>

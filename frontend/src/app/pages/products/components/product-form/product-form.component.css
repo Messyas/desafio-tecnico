@@ -1,0 +1,49 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.product-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+.product-form__field {
+  display: block;
+  width: 100%;
+}
+
+.product-form__fields mat-form-field {
+  width: 100%;
+}
+
+.product-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 420px;
+  margin-inline: auto;
+  margin-top: 1rem;
+}
+
+.product-form__actions button {
+  min-height: 44px;
+}
+
+.product-form__actions :is(span, mat-spinner) {
+  margin-inline: auto;
+}

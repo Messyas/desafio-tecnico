@@ -1,14 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterOutlet } from '@angular/router';
 import { finalize, take } from 'rxjs/operators';
 
 import { AuthService } from './core/auth/auth.service';
+import { AppNavbarComponent } from './core/ui/components/app-navbar/app-navbar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatToolbarModule, MatButtonModule],
+  imports: [RouterOutlet, AppNavbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -16,7 +15,7 @@ export class App {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  protected readonly title = signal('Desafio Tecnico');
+  protected readonly title = signal('Tech Home');
   protected readonly isLoggingOut = signal(false);
 
   protected shouldShowLogoutButton(): boolean {

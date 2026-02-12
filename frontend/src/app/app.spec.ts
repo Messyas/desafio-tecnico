@@ -32,6 +32,6 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.app-navbar__brand')?.textContent).toContain('Desafio Tecnico');
+    expect(compiled.querySelector('.app-navbar__brand')?.textContent).toContain('Tech Home');
   });
 });

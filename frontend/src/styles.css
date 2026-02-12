@@ -8,17 +8,19 @@ body {
   min-height: 100%;
 }
 
-.mat-mdc-snack-bar-container.toast-success .mdc-snackbar__surface {
-  background-color: #1b5e20;
-  color: #ffffff;
+.mat-mdc-snack-bar-container:is(.toast-success, .toast-error, .toast-info) .mdc-snackbar__surface {
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 0.75rem;
 }
 
-.mat-mdc-snack-bar-container.toast-error .mdc-snackbar__surface {
-  background-color: #b71c1c;
-  color: #ffffff;
+.mat-mdc-snack-bar-container:is(.toast-success, .toast-error, .toast-info) .mdc-snackbar__label {
+  color: var(--mat-sys-on-surface);
 }
 
-.mat-mdc-snack-bar-container.toast-info .mdc-snackbar__surface {
-  background-color: #0d47a1;
-  color: #ffffff;
+.mat-mdc-snack-bar-container:is(.toast-success, .toast-error, .toast-info)
+  .mat-mdc-snack-bar-action
+  .mat-mdc-button {
+  color: var(--mat-sys-primary);
 }

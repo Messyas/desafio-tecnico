@@ -84,9 +84,7 @@ describe('LoginPage', () => {
     const fixture = TestBed.createComponent(LoginPage);
     const component = fixture.componentInstance;
 
-    authServiceMock.login.mockReturnValue(
-      throwError(() => new HttpErrorResponse({ status: 401 })),
-    );
+    authServiceMock.login.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 401 })));
 
     component.form.setValue({ identifier: 'user', password: 'wrong' });
     component.onSubmit();
